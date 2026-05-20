@@ -290,6 +290,13 @@
   </div>
 
   <div class="project-card">
+    <h4>script-ai/ <span style="opacity:0.6; font-size:0.8em; font-weight:normal;">[private]</span></h4>
+    <div class="stack">react native · expo · typescript · anthropic claude · ios</div>
+    <p>Cross-platform mobile app for content creators. Generates platform-aware video scripts using a Hook–Story–Outro structure, personalized to the user's niche, sub-niche, and tone. Includes onboarding flow, creator dashboard, trending-hooks bank, and a curated creator-tools directory. Built and tested on iPhone via Xcode with Anthropic Claude API integration on the backend.</p>
+    <p><span style="opacity:0.5;">→ in active development, repo private</span></p>
+  </div>
+
+  <div class="project-card">
     <h4>monopoly-india/</h4>
     <div class="stack">html · css · javascript</div>
     <p>Web-based Monopoly with Indian cities instead of US ones — Mumbai and Hyderabad replace Boardwalk and Park Place as the most expensive properties. Supports 1–4 human players with bots filling the rest. Includes dice rolling with doubles, property buying, rent collection (doubled for full color groups), railroads, utilities, jail, chance/treasury cards with India-themed events (IPL bets, Diwali bonuses, Bangalore traffic fines), and bankruptcy. Vanilla JS, no frameworks.</p>
@@ -367,6 +374,7 @@ const COMMANDS = {
     run: () => [
       "drwxr-xr-x  cta-ridership-predictor/    (Python, XGBoost, Streamlit)",
       "drwxr-xr-x  uic-cs-rag-agent/           (Python, Claude, ChromaDB)",
+      "drwxr-xr-x  script-ai/                  (React Native, Claude, iOS)  [private]",
       "drwxr-xr-x  monopoly-india/             (HTML, CSS, JavaScript)",
       "",
       "type 'cat <project-name>' for details.",
@@ -407,6 +415,24 @@ const COMMANDS = {
       "  • every answer cites source chunks",
       "",
       "→ <a href='https://github.com/schin57-hub/uic-cs-rag-agent' target='_blank'>github.com/schin57-hub/uic-cs-rag-agent</a>",
+    ]
+  },
+  "cat script-ai": {
+    run: () => [
+      "── script-ai ───────────────────────────────────────────",
+      "stack: React Native · Expo · TypeScript · Anthropic Claude · iOS",
+      "status: in active development, repo private",
+      "",
+      "Cross-platform mobile app for content creators.",
+      "Generates platform-aware video scripts using a",
+      "Hook–Story–Outro structure, personalized to the user's",
+      "niche, sub-niche, and tone.",
+      "",
+      "  • onboarding flow (niche / sub-niche / platform / vibe)",
+      "  • creator dashboard with quick actions and trending hooks",
+      "  • curated creator-tools directory",
+      "  • backend AI integration via Anthropic Claude API",
+      "  • tested on iPhone via Xcode (personal Apple dev account)",
     ]
   },
   "cat monopoly-india": {
@@ -471,6 +497,7 @@ COMMANDS["cat cta"] = COMMANDS["cat cta-ridership-predictor"];
 COMMANDS["cat rag"] = COMMANDS["cat uic-cs-rag-agent"];
 COMMANDS["cat uic"] = COMMANDS["cat uic-cs-rag-agent"];
 COMMANDS["cat monopoly"] = COMMANDS["cat monopoly-india"];
+COMMANDS["cat script"] = COMMANDS["cat script-ai"];
 
 function printLine(text, cls = "output") {
   const line = document.createElement("div");
