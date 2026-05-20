@@ -289,6 +289,13 @@
     <p><a href="https://github.com/schin57-hub/uic-cs-rag-agent" target="_blank">→ github.com/schin57-hub/uic-cs-rag-agent</a></p>
   </div>
 
+  <div class="project-card">
+    <h4>monopoly-india/</h4>
+    <div class="stack">html · css · javascript</div>
+    <p>Web-based Monopoly with Indian cities instead of US ones — Mumbai and Hyderabad replace Boardwalk and Park Place as the most expensive properties. Supports 1–4 human players with bots filling the rest. Includes dice rolling with doubles, property buying, rent collection (doubled for full color groups), railroads, utilities, jail, chance/treasury cards with India-themed events (IPL bets, Diwali bonuses, Bangalore traffic fines), and bankruptcy. Vanilla JS, no frameworks.</p>
+    <p><a href="https://schin57-hub.github.io/monopoly-india/" target="_blank">→ play live</a> · <a href="https://github.com/schin57-hub/monopoly-india" target="_blank">→ github.com/schin57-hub/monopoly-india</a></p>
+  </div>
+
   <h3>$ cat skills.txt</h3>
   <ul>
     <li><strong>Languages:</strong> Python, Java, C++, JavaScript, TypeScript, SQL</li>
@@ -360,6 +367,7 @@ const COMMANDS = {
     run: () => [
       "drwxr-xr-x  cta-ridership-predictor/    (Python, XGBoost, Streamlit)",
       "drwxr-xr-x  uic-cs-rag-agent/           (Python, Claude, ChromaDB)",
+      "drwxr-xr-x  monopoly-india/             (HTML, CSS, JavaScript)",
       "",
       "type 'cat <project-name>' for details.",
     ]
@@ -399,6 +407,25 @@ const COMMANDS = {
       "  • every answer cites source chunks",
       "",
       "→ <a href='https://github.com/schin57-hub/uic-cs-rag-agent' target='_blank'>github.com/schin57-hub/uic-cs-rag-agent</a>",
+    ]
+  },
+  "cat monopoly-india": {
+    run: () => [
+      "── monopoly-india ──────────────────────────────────────",
+      "stack: HTML · CSS · JavaScript (vanilla, no frameworks)",
+      "",
+      "Web-based Monopoly with Indian cities replacing the US ones.",
+      "Mumbai and Hyderabad replace Boardwalk and Park Place as the",
+      "most expensive properties.",
+      "",
+      "  • 1–4 humans, bots fill the rest (always 4 players)",
+      "  • dice rolling with doubles, jail logic, rent doubling",
+      "  • India-themed Chance/Treasury cards",
+      "  • railroads (Rajdhani, Vande Bharat, Shatabdi, Duronto)",
+      "  • utilities (Reliance Power, Airtel)",
+      "",
+      "→ <a href='https://schin57-hub.github.io/monopoly-india/' target='_blank'>play live</a>",
+      "→ <a href='https://github.com/schin57-hub/monopoly-india' target='_blank'>github.com/schin57-hub/monopoly-india</a>",
     ]
   },
   skills: {
@@ -443,6 +470,7 @@ const COMMANDS = {
 COMMANDS["cat cta"] = COMMANDS["cat cta-ridership-predictor"];
 COMMANDS["cat rag"] = COMMANDS["cat uic-cs-rag-agent"];
 COMMANDS["cat uic"] = COMMANDS["cat uic-cs-rag-agent"];
+COMMANDS["cat monopoly"] = COMMANDS["cat monopoly-india"];
 
 function printLine(text, cls = "output") {
   const line = document.createElement("div");
