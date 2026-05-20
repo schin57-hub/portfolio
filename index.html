@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sai Sumanth Chintalapati — CS @ UIC</title>
+<meta name="description" content="Sai Sumanth Chintalapati — CS junior at UIC, AI/ML projects, portfolio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --bg-2: #151515;
+    --amber: #ffb000;
+    --amber-dim: #b87800;
+    --text: #e8e8e8;
+    --text-dim: #888;
+    --border: #2a2a2a;
+    --mono: "JetBrains Mono", "SF Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    line-height: 1.55;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* CRT scanline effect — subtle */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(255,176,0,0.015) 3px,
+      rgba(0,0,0,0) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* ===== TERMINAL SECTION ===== */
+  .terminal-section {
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .terminal {
+    width: 100%;
+    max-width: 900px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(255,176,0,0.05), 0 0 1px rgba(255,176,0,0.2);
+    overflow: hidden;
+  }
+
+  .terminal-header {
+    background: #1f1f1f;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    user-select: none;
+  }
+
+  .terminal-body {
+    padding: 24px;
+    min-height: 60vh;
+    max-height: 75vh;
+    overflow-y: auto;
+    font-size: 14px;
+  }
+
+  .terminal-body::-webkit-scrollbar { width: 8px; }
+  .terminal-body::-webkit-scrollbar-track { background: transparent; }
+  .terminal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .line { margin: 2px 0; white-space: pre-wrap; word-wrap: break-word; }
+  .prompt { color: var(--amber); user-select: none; }
+  .output { color: var(--text); padding-left: 0; }
+  .output.dim { color: var(--text-dim); }
+  .output a { color: var(--amber); text-decoration: none; border-bottom: 1px dashed var(--amber-dim); }
+  .output a:hover { color: #fff; border-bottom-color: var(--amber); }
+
+  .input-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .input-line input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    flex: 1;
+    caret-color: var(--amber);
+  }
+
+  .cursor-blink {
+    display: inline-block;
+    background: var(--amber);
+    width: 8px;
+    height: 16px;
+    vertical-align: middle;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .ascii-art {
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.0;
+    letter-spacing: 0;
+    white-space: pre;
+    margin: 8px 0 4px 0;
+    user-select: none;
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(255, 176, 0, 0.3);
+  }
+  .logo-sub {
+    color: var(--text-dim);
+    font-size: 13px;
+    margin: 4px 0 20px 0;
+    user-select: none;
+  }
+  @media (max-width: 600px) {
+    .ascii-art { font-size: 9px; }
+  }
+
+  .hint {
+    color: var(--text-dim);
+    font-style: italic;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+
+  /* ===== SCROLL FALLBACK ===== */
+  .fallback {
+    padding: 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    border-top: 1px solid var(--border);
+  }
+
+  .fallback h2 {
+    color: var(--amber);
+    font-size: 24px;
+    margin-bottom: 16px;
+    font-family: var(--mono);
+  }
+  .fallback h3 {
+    color: var(--text);
+    font-size: 18px;
+    margin: 32px 0 8px 0;
+    font-family: var(--mono);
+  }
+  .fallback p, .fallback li {
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .fallback ul { padding-left: 24px; margin-bottom: 16px; }
+  .fallback a {
+    color: var(--amber);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--amber-dim);
+  }
+  .fallback a:hover { color: #fff; }
+
+  .project-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 16px;
+    background: var(--bg-2);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .project-card:hover {
+    border-color: var(--amber-dim);
+    transform: translateY(-2px);
+  }
+  .project-card h4 {
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  .project-card .stack {
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 40px 24px;
+    color: var(--text-dim);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .terminal-section { padding: 12px; }
+    .terminal-body { padding: 16px; font-size: 13px; }
+    .ascii-art { font-size: 8px; }
+    .fallback { padding: 40px 20px; }
+    .fallback h2 { font-size: 20px; }
+    .fallback p, .fallback li { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TERMINAL SECTION ===== -->
+<section class="terminal-section">
+  <div class="terminal">
+    <div class="terminal-header">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+      <span class="terminal-title">sai@uic ~ — zsh</span>
+    </div>
+    <div class="terminal-body" id="terminal" onclick="document.getElementById('cmd').focus()">
+      <div id="output"></div>
+      <div class="input-line" id="inputLine" style="display:none;">
+        <span class="prompt">sai@uic ~ %</span>
+        <input id="cmd" type="text" autocomplete="off" autofocus spellcheck="false" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SCROLL FALLBACK (for recruiters who don't want to type) ===== -->
+<section class="fallback" id="fallback">
+  <h2>$ cat about.txt</h2>
+  <p>Hey — I'm Sai Sumanth Chintalapati, a Computer Science student at the University of Illinois Chicago (joined 2024). I build things at the intersection of machine learning, software engineering, and product. Mostly Python these days; comfortable in Java, C++, and JavaScript/React when the project needs it.</p>
+
+  <h3>$ ls projects/</h3>
+
+  <div class="project-card">
+    <h4>cta-ridership-predictor/</h4>
+    <div class="stack">python · xgboost · scikit-learn · pandas · streamlit</div>
+    <p>End-to-end ML pipeline forecasting daily ridership across 144 CTA 'L' stations using 23 years of Chicago Open Data Portal records. Engineered leakage-free time-series features and validated with walk-forward cross-validation. XGBoost achieved 13.6% MAPE and R²=0.94 on a 6-month held-out test set — 2.3× lower error than naive baselines. Deployed via interactive Streamlit dashboard.</p>
+    <p><a href="https://github.com/schin57-hub/cta-ridership-predictor" target="_blank">→ github.com/schin57-hub/cta-ridership-predictor</a></p>
+  </div>
+
+  <div class="project-card">
+    <h4>uic-cs-rag-agent/</h4>
+    <div class="stack">python · anthropic claude · chromadb · bm25 · streamlit</div>
+    <p>RAG system answering questions about the UIC CS department (60+ courses, degree programs, contact info). Implements three retrieval strategies — dense embeddings, BM25 keyword scoring, and hybrid Reciprocal Rank Fusion — with course-code-aware tokenization to handle ambiguous queries. Grounded refusal pattern via Claude prevents hallucination; every answer cites its source chunks. Evaluated against a hand-curated benchmark.</p>
+    <p><a href="https://github.com/schin57-hub/uic-cs-rag-agent" target="_blank">→ github.com/schin57-hub/uic-cs-rag-agent</a></p>
+  </div>
+
+  <h3>$ cat skills.txt</h3>
+  <ul>
+    <li><strong>Languages:</strong> Python, Java, C++, JavaScript, TypeScript, SQL</li>
+    <li><strong>ML / Data:</strong> XGBoost, scikit-learn, pandas, NumPy, matplotlib</li>
+    <li><strong>AI / LLM:</strong> Anthropic Claude API, ChromaDB, BM25, RAG, prompt engineering</li>
+    <li><strong>Web / Tools:</strong> React, Streamlit, Flask, Git, GitHub, Linux/macOS terminal</li>
+    <li><strong>Currently learning:</strong> LoRA fine-tuning, multi-agent systems</li>
+  </ul>
+
+  <h3>$ contact --show</h3>
+  <ul>
+    <li>Email: <a href="mailto:sumanthchintalapati@outlook.com">sumanthchintalapati@outlook.com</a></li>
+    <li>GitHub: <a href="https://github.com/schin57-hub" target="_blank">github.com/schin57-hub</a></li>
+    <li>School: University of Illinois Chicago — CS, class of 2027</li>
+  </ul>
+</section>
+
+<div class="footer">
+  Built from scratch with HTML, CSS, and vanilla JS — no frameworks, no trackers.
+  <br>Type <code style="color:var(--amber)">help</code> in the terminal above to navigate.
+</div>
+
+<script>
+// ===== TERMINAL ENGINE =====
+
+const output = document.getElementById('output');
+const inputLine = document.getElementById('inputLine');
+const cmdInput = document.getElementById('cmd');
+const terminalBody = document.getElementById('terminal');
+
+const ASCII = ` ███████╗ █████╗ ██╗
+ ██╔════╝██╔══██╗██║
+ ███████╗███████║██║
+ ╚════██║██╔══██║██║
+ ███████║██║  ██║██║
+ ╚══════╝╚═╝  ╚═╝╚═╝`;
+const LOGO_SUB = "// sai sumanth chintalapati · cs · uic · class of 2027";
+
+const COMMANDS = {
+  help: {
+    desc: "show available commands",
+    run: () => [
+      "available commands:",
+      "",
+      "  whoami        → who I am",
+      "  ls projects   → list my projects",
+      "  cat <project> → details on a specific project",
+      "  skills        → my technical skills",
+      "  contact       → how to reach me",
+      "  github        → open my GitHub",
+      "  clear         → clear the screen",
+      "  sudo hire-me  → ???",
+      "",
+      "tip: scroll down for a non-interactive version of this page.",
+    ]
+  },
+  whoami: {
+    desc: "who I am",
+    run: () => [
+      "Sai Sumanth Chintalapati",
+      "Computer Science · University of Illinois Chicago · joined 2024",
+      "",
+      "I build things at the intersection of ML, software, and product.",
+      "Mostly Python — comfortable in Java, C++, and JS/React when needed."
+    ]
+  },
+  "ls projects": {
+    desc: "list projects",
+    run: () => [
+      "drwxr-xr-x  cta-ridership-predictor/    (Python, XGBoost, Streamlit)",
+      "drwxr-xr-x  uic-cs-rag-agent/           (Python, Claude, ChromaDB)",
+      "",
+      "type 'cat <project-name>' for details.",
+    ]
+  },
+  "ls": {
+    desc: "ls",
+    run: () => COMMANDS["ls projects"].run()
+  },
+  "cat cta-ridership-predictor": {
+    run: () => [
+      "── cta-ridership-predictor ─────────────────────────────",
+      "stack: Python · XGBoost · scikit-learn · pandas · Streamlit",
+      "",
+      "ML pipeline forecasting daily ridership across 144 CTA 'L'",
+      "stations using 23 years of Chicago Open Data Portal records.",
+      "",
+      "  • engineered leakage-free time-series features",
+      "  • validated with walk-forward cross-validation",
+      "  • XGBoost: 13.6% MAPE, R²=0.94 on held-out test set",
+      "  • 2.3× lower error than naive baselines",
+      "",
+      "→ <a href='https://github.com/schin57-hub/cta-ridership-predictor' target='_blank'>github.com/schin57-hub/cta-ridership-predictor</a>",
+    ]
+  },
+  "cat uic-cs-rag-agent": {
+    run: () => [
+      "── uic-cs-rag-agent ────────────────────────────────────",
+      "stack: Python · Anthropic Claude · ChromaDB · BM25 · Streamlit",
+      "",
+      "RAG system answering questions about the UIC CS department.",
+      "60+ courses, degree programs, contact info — all grounded in",
+      "the official UIC course catalog.",
+      "",
+      "  • 3 retrieval strategies (dense, BM25, hybrid via RRF)",
+      "  • course-code-aware tokenization fixes ambiguous queries",
+      "  • grounded refusal pattern — never hallucinates",
+      "  • every answer cites source chunks",
+      "",
+      "→ <a href='https://github.com/schin57-hub/uic-cs-rag-agent' target='_blank'>github.com/schin57-hub/uic-cs-rag-agent</a>",
+    ]
+  },
+  skills: {
+    run: () => [
+      "languages:    Python · Java · C++ · JavaScript · TypeScript · SQL",
+      "ml/data:      XGBoost · scikit-learn · pandas · NumPy · matplotlib",
+      "ai/llm:       Anthropic Claude · ChromaDB · BM25 · RAG · prompt eng.",
+      "web/tools:    React · Streamlit · Flask · Git · Linux/macOS terminal",
+      "learning:     LoRA fine-tuning · multi-agent systems",
+    ]
+  },
+  contact: {
+    run: () => [
+      "email:   <a href='mailto:sumanthchintalapati@outlook.com'>sumanthchintalapati@outlook.com</a>",
+      "github:  <a href='https://github.com/schin57-hub' target='_blank'>github.com/schin57-hub</a>",
+      "school:  University of Illinois Chicago — CS, class of 2027",
+    ]
+  },
+  github: {
+    run: () => {
+      window.open('https://github.com/schin57-hub', '_blank');
+      return ["opening github.com/schin57-hub in a new tab..."];
+    }
+  },
+  clear: {
+    run: () => { output.innerHTML = ''; return null; }
+  },
+  "sudo hire-me": {
+    run: () => [
+      "[sudo] password for recruiter: ********",
+      "",
+      "✓ access granted",
+      "✓ AI/ML internship pipeline initiated",
+      "✓ resume forwarded to hiring manager",
+      "",
+      "thanks for reading this far :) email me — let's talk."
+    ]
+  }
+};
+
+// Aliases
+COMMANDS["cat cta"] = COMMANDS["cat cta-ridership-predictor"];
+COMMANDS["cat rag"] = COMMANDS["cat uic-cs-rag-agent"];
+COMMANDS["cat uic"] = COMMANDS["cat uic-cs-rag-agent"];
+
+function printLine(text, cls = "output") {
+  const line = document.createElement("div");
+  line.className = "line " + cls;
+  line.innerHTML = text;
+  output.appendChild(line);
+}
+
+function printCommand(cmd) {
+  const line = document.createElement("div");
+  line.className = "line";
+  line.innerHTML = `<span class="prompt">sai@uic ~ %</span> ${cmd}`;
+  output.appendChild(line);
+}
+
+function scrollToBottom() {
+  terminalBody.scrollTop = terminalBody.scrollHeight;
+}
+
+function runCommand(raw) {
+  const cmd = raw.trim().toLowerCase();
+  printCommand(raw);
+
+  if (!cmd) { return; }
+
+  // Try exact match first, then look for any command that starts with the input
+  let entry = COMMANDS[cmd];
+  if (!entry) {
+    // fuzzy match: "cat cta" matches if user types "cat cta-rider"
+    const matchKey = Object.keys(COMMANDS).find(k =>
+      cmd === k || cmd.startsWith(k + " ") || k.startsWith(cmd)
+    );
+    if (matchKey && cmd.length >= 3) entry = COMMANDS[matchKey];
+  }
+
+  if (entry) {
+    const result = entry.run();
+    if (result) {
+      result.forEach(l => printLine(l));
+      printLine("");
+    }
+  } else {
+    printLine(`zsh: command not found: ${raw}`, "output dim");
+    printLine(`type <span style="color:var(--amber)">help</span> for a list of commands.`, "output dim");
+    printLine("");
+  }
+  scrollToBottom();
+}
+
+// ===== BOOT SEQUENCE =====
+
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function typeLine(text, cls = "output", speed = 8) {
+  const line = document.createElement("div");
+  line.className = "line " + cls;
+  output.appendChild(line);
+  for (let i = 0; i < text.length; i++) {
+    line.innerHTML = text.slice(0, i + 1);
+    if (i % 3 === 0) scrollToBottom();
+    await sleep(speed);
+  }
+  scrollToBottom();
+}
+
+async function boot() {
+  // ASCII art logo (renders properly with JetBrains Mono)
+  const asciiDiv = document.createElement("div");
+  asciiDiv.className = "ascii-art";
+  asciiDiv.textContent = ASCII;
+  output.appendChild(asciiDiv);
+
+  const subDiv = document.createElement("div");
+  subDiv.className = "logo-sub";
+  subDiv.textContent = LOGO_SUB;
+  output.appendChild(subDiv);
+
+  // Short hint so visitors know it's interactive
+  const hint = document.createElement("div");
+  hint.className = "hint";
+  hint.innerHTML = `type <span style="color:var(--amber)">help</span> for commands, or scroll down ↓`;
+  output.appendChild(hint);
+
+  // Show input line, ready for the visitor
+  inputLine.style.display = "flex";
+  cmdInput.focus();
+  scrollToBottom();
+}
+
+// Wire up input
+cmdInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const val = cmdInput.value;
+    cmdInput.value = "";
+    runCommand(val);
+  }
+});
+
+// Click anywhere in terminal to focus input
+document.querySelector(".terminal-body").addEventListener("click", () => cmdInput.focus());
+
+// Boot on load
+window.addEventListener("DOMContentLoaded", boot);
+</script>
+
+</body>
+</html>
